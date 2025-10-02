@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forgot Password</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <div class="form-wrapper">
+    <h2>Reset Password</h2>
+    
+    <label for="username">Username</label>
+    <input type="text" id="username" placeholder="Enter your username" required>
+
+    <label for="new_password">New Password</label>
+    <input type="password" id="new_password" placeholder="Enter new password" required>
+
+    <label for="confirm_password">Confirm Password</label>
+    <input type="password" id="confirm_password" placeholder="Confirm new password" required>
+
+    <button id="resetBtn">Update Password</button>
+
+    <div class="extra-links" style="text-align:center; margin-top:15px;">
+      Remembered your password? <a href="login.html">Log In</a>
+    </div>
+
+    <!-- Success & Error Messages -->
+    <div id="reset-success" class="success">✅ Password updated successfully! You can now log in.</div>
+    <div id="reset-error" class="error">⚠️ Passwords do not match or user not found!</div>
+  </div>
+
+  <script>
+    $(document).ready(function () {
+      $("#reset-success, #reset-error").hide();
+
+      $("#resetBtn").click(function () {
+        let username = $("#username").val().trim();
+        let newPassword = $("#new_password").val();
+        let confirmPassword = $("#confirm_password").val();
+
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+
+        // Find user
+        let userIndex = users.findIndex(user => user.username === username);
+
+        if (userIndex === -1) {
+          $("#reset-error").text("⚠️ User not found!").fadeIn();
+          return;
+        }
+
+        if (!newPassword || !confirmPassword) {
+          $("#reset-error").text("⚠️ Please fill in all fields").fadeIn();
+          return;
+        }
+
+        if (newPassword !== confirmPassword) {
+          $("#reset-error").text("⚠️ Passwords do not match!").fadeIn();
+          return;
+        }
+
+        // ✅ Update password
+        users[userIndex].password = newPassword;
+        localStorage.setItem("users", JSON.stringify(users));
+
+        $("#reset-error").hide();
+        $("#reset-success").fadeIn();
+      });
+    });
+  </script>
+</body>
+</html>

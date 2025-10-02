@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Registration Page</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+  <div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="form-wrapper shadow-lg p-4">
+      <h2 class="text-center mb-3">Register</h2>
+      
+      <form id="registerForm" novalidate>
+        <div class="mb-3">
+          <label for="name" class="form-label">Full Name</label>
+          <input type="text" id="name" name="name" class="form-control" placeholder="Enter your full name" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" id="email" name="email" class="form-control" placeholder="Enter email" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" id="password" name="password" class="form-control" placeholder="Enter password" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="confirm_password" class="form-label">Confirm Password</label>
+          <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="Confirm password" required>
+        </div>
+        
+        <button type="submit" class="btn btn-primary w-100">Register</button>
+        <div id="success" class="mt-3 text-center"></div>
+      </form>
+
+      <div class="extra-links mt-3 text-center">
+        <a href="login.html">Already have an account? Login</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
+  <script>
+$(document).ready(function () {
+
+  $.validator.addMethod("lettersonly", function(value, element) {
+    return this.optional(element) || /^[a-zA-Z\s]+$/.test(value);
+  }, "Name can only contain letters and spaces");
+
+  $("#registerForm").validate({
+    rules: {
+      name: {
+        required: true,
+        minlength: 3,
+        lettersonly: true
+      },
+      email: {
+        required: true,
+        email: true
+      },
+      password: {
+        required: true,
+        minlength: 5
+      },
+      confirm_password: {
+        required: true,
+        equalTo: "#password" 
+      }
+    },
+    messages: {
+      name: {
+        required: "Please enter your name",
+        minlength: "Name must be at least 3 characters",
+        lettersonly: "Name can only contain letters and spaces"
+      },
+      email: {
+        required: "Please enter your email",
+        email: "Please enter a valid email (e.g. name@gmail.com)"
+      },
+      password: {
+        required: "Please enter a password",
+        minlength: "Password must be at least 5 characters"
+      },
+      confirm_password: {
+        required: "Please confirm your password",
+        equalTo: "Passwords do not match"
+      }
+    },
+    errorClass: "text-danger",
+    onkeyup: false,
+    onclick: false,
+    onfocusout: function(element) {
+      $(element).valid();
+    },
+    showErrors: function(errorMap, errorList) {
+      this.currentElements.removeClass(this.settings.errorClass);
+      $("label.error").remove();
+      if (errorList.length) {
+        var error = errorList[0];
+        $(error.element)
+          .addClass(this.settings.errorClass)
+          .after("<label class='error text-danger'>" + error.message + "</label>");
+      }
+    },
+    submitHandler: function(form) {
+      $("#success").html("Successfully registered! You can now log in.").show();
+      form.reset();
+      return false;
+    }
+  });
+
+  $("#registerForm input").on("focus", function() {
+    $("#success").empty().hide();
+  });
+
+});
+  </script>
+</body>
+</html>
